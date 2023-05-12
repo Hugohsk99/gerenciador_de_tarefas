@@ -116,9 +116,9 @@ class TaskManager(tk.Tk):
 
 def register_and_login(self, username, password):
     self.destroy()
-    gerenciador_tarefas = TaskManager()
-    gerenciador_tarefas.protocol("WM_DELETE_WINDOW", gerenciador_tarefas.on_closing)
-    gerenciador_tarefas.mainloop()
+    task_manager = TaskManager()
+    task_manager.protocol("WM_DELETE_WINDOW", task_manager.on_closing)
+    task_manager.mainloop()
 
         
 def show_login():

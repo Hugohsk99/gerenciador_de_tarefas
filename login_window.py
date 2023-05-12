@@ -1,5 +1,6 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, ttk
+from PIL import Image, ImageTk  # Importe Image e ImageTk de PIL
 from register_window import RegisterWindow
 import sqlite3
 
@@ -8,25 +9,57 @@ class LoginWindow(tk.Toplevel):
         super().__init__(*args, **kwargs)
 
         self.title("Login")
-        self.geometry("300x200")
+        self.attributes('-zoomed', True)  # Maximiza a janela mantendo a barra de ações
 
-        self.username_label = tk.Label(self, text="Usuário:")
-        self.username_label.pack(pady=10)
+        self.bind('<Configure>', self.resize)  # Vincular evento de redimensionamento
 
-        self.username_entry = tk.Entry(self)
-        self.username_entry.pack()
+        # Crie um canvas e desenhe a imagem de fundo
+        self.canvas = tk.Canvas(self)
+        self.canvas.pack(fill='both', expand=True)
 
-        self.password_label = tk.Label(self, text="Senha:")
-        self.password_label.pack(pady=10)
+        # Crie um frame para conter os widgets
+        frame = ttk.Frame(self.canvas)
+        frame.place(relx=0.5, rely=0.5, anchor='center')
 
-        self.password_entry = tk.Entry(self, show="*")
-        self.password_entry.pack()
+        # Cria um estilo
+        style = ttk.Style()
+        style.configure("TLabel", foreground="white", background="#123456", font=("Helvetica", 12))
+        style.configure("TButton", foreground="white", background="#123456", font=("Helvetica", 12))
+        style.configure("TEntry", foreground="black", background="white", font=("Helvetica", 12))
 
-        self.login_button = tk.Button(self, text="Login", command=self.login)
-        self.login_button.pack(pady=10)
+        self.username_label = ttk.Label(frame, text="Usuário:")
+        self.username_label.grid(row=0, column=0, padx=10, pady=10)
 
-        self.register_button = tk.Button(self, text="Cadastrar", command=self.open_register_window)
-        self.register_button.pack()
+        self.username_entry = ttk.Entry(frame)
+        self.username_entry.grid(row=0, column=1, padx=10, pady=10)
+
+        self.password_label = ttk.Label(frame, text="Senha:")
+        self.password_label.grid(row=1, column=0, padx=10, pady=10)
+
+        self.password_entry = ttk.Entry(frame, show="*")
+        self.password_entry.grid(row=1, column=1, padx=10, pady=10)
+
+        self.login_button = ttk.Button(frame, text="Login", command=self.login)
+        self.login_button.grid(row=2, column=0, padx=10, pady=10, columnspan=2)
+
+        self.register_button = ttk.Button(frame, text="Cadastrar", command=self.open_register_window)
+        self.register_button.grid(row=3, column=0, padx=10, pady=10, columnspan=2)
+
+        # Load background image initially
+        self.load_bg_image()
+
+    def load_bg_image(self):
+        # Carregue a imagem de fundo com PIL e converta para PhotoImage
+        image = Image.open("12706.jpg")  # Substitua com o caminho da sua imagem
+        image = image.resize((self.winfo_screenwidth(), self.winfo_screenheight()), Image.ANTIALIAS)  # Redimensiona a imagem para caber na janela
+        self.bg_image = ImageTk.PhotoImage(image)
+        self.canvas.create_image(0, 0, image=self.bg_image, anchor='nw')
+
+    def resize(self, event):  # Função para ajustar os widgets
+        self.load_bg_image()
+
+    # Resto do código...
+
     
     def register_user(self, username, password):
         conn = sqlite3.connect('tasks.db')
