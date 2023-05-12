@@ -112,19 +112,22 @@ class TaskManager(tk.Tk):
         user = self.cursor.fetchone()
         return bool(user)
 
-    def register_user(self, username, password):
-        try:
-            self.cursor.execute("INSERT INTO usuarios (username, password) VALUES (?, ?)", (username, password))
-            self.conn.commit()
-            return True
-        except sqlite3.Error as e:
-            print(e)
-            return False
+    # In the TaskManager class
+
+def register_and_login(self, username, password):
+    self.destroy()
+    gerenciador_tarefas = TaskManager()
+    gerenciador_tarefas.protocol("WM_DELETE_WINDOW", gerenciador_tarefas.on_closing)
+    gerenciador_tarefas.mainloop()
+
         
 def show_login():
+    root = tk.Tk()  # Get the root window
+    root.withdraw()  # Hide the root window
     login_window = LoginWindow()
     login_window.protocol("WM_DELETE_WINDOW", login_window.on_closing)
     login_window.mainloop()
+    root.destroy()  # Destroy the root window
 
 if __name__ == "__main__":
     show_login()

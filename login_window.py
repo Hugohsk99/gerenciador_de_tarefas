@@ -27,6 +27,17 @@ class LoginWindow(tk.Toplevel):
 
         self.register_button = tk.Button(self, text="Cadastrar", command=self.open_register_window)
         self.register_button.pack()
+    
+    def register_user(self, username, password):
+        conn = sqlite3.connect('tasks.db')
+        cursor = conn.cursor()
+        try:
+            cursor.execute("INSERT INTO usuarios (username, password) VALUES (?, ?)", (username, password))
+            conn.commit()
+            return True
+        except sqlite3.Error as e:
+            print(e)
+            return False
 
     def login(self):
         username = self.username_entry.get()
@@ -34,12 +45,14 @@ class LoginWindow(tk.Toplevel):
 
         if self.validate_login(username, password):
             self.destroy()
-            from task_manager import TaskManager  # Importe a classe TaskManager aqui
-            task_manager = TaskManager()
-            task_manager.protocol("WM_DELETE_WINDOW", task_manager.on_closing)
-            task_manager.mainloop()
+            from gerenciador_tarefas import TaskManager  # Importe a classe TaskManager aqui
+            gerenciador_tarefas = TaskManager()
+            gerenciador_tarefas.protocol("WM_DELETE_WINDOW", gerenciador_tarefas.on_closing)
+            gerenciador_tarefas.mainloop()
         else:
             messagebox.showerror("Erro", "Usuário ou senha inválidos")
+    
+    
 
     def validate_login(self, username, password):
         conn = sqlite3.connect('tasks.db')
@@ -48,16 +61,15 @@ class LoginWindow(tk.Toplevel):
         user = cursor.fetchone()
         conn.close()
         return bool(user)
-        
     
     def register_and_login(self, username, password):
         self.destroy()
-        task_manager = TaskManager()
-        task_manager.protocol("WM_DELETE_WINDOW", task_manager.on_closing)
-        task_manager.mainloop()
+        gerenciador_tarefas = TaskManager()
+        gerenciador_tarefas.protocol("WM_DELETE_WINDOW", gerenciador_tarefas.on_closing)
+        gerenciador_tarefas.mainloop()
 
     def open_register_window(self):
-        RegisterWindow(self.parent)
+        RegisterWindow(self)  # Pass 'self' instead of 'self.parent'
     
     def on_closing(self):
         self.destroy()
