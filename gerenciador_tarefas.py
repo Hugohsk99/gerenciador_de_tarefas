@@ -8,9 +8,11 @@ class TaskManager(tk.Tk):
     
     def __init__(self):
         super().__init__()
+        
+        self.title("Login")
+        self.attributes('-fullscreen', True)  # Para abrir em tela cheia
 
-        self.title("Gerenciador de Tarefas")
-        self.geometry("400x400")
+        self.bind('<Configure>', self.resize)  # Vincular evento de redimensionamento
 
         self.tasks = []
 
@@ -39,6 +41,15 @@ class TaskManager(tk.Tk):
         self.cursor.execute('CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY, username TEXT, password TEXT)')
 
         self.load_tasks()
+
+    def resize(self, event):  # Função para ajustar os widgets
+            width = self.winfo_width()
+            height = self.winfo_height()
+
+            # Ajuste os widgets de acordo com a nova largura e altura
+            # Por exemplo, você pode definir a largura do campo de entrada para ser proporcional à nova largura da janela:
+            self.username_entry.config(width=int(width / 10))
+            self.password_entry.config(width=int(width / 10))
 
     def load_tasks(self):
         self.tasks_listbox.delete(0, tk.END)
@@ -116,9 +127,9 @@ class TaskManager(tk.Tk):
 
 def register_and_login(self, username, password):
     self.destroy()
-    task_manager = TaskManager()
-    task_manager.protocol("WM_DELETE_WINDOW", task_manager.on_closing)
-    task_manager.mainloop()
+    gerenciador_tarefas = TaskManager()
+    gerenciador_tarefas.protocol("WM_DELETE_WINDOW", gerenciador_tarefas.on_closing)
+    gerenciador_tarefas.mainloop()
 
         
 def show_login():
